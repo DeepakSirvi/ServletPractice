@@ -1,0 +1,186 @@
+package com.dollop.app.controller;
+
+import java.io.IOException;
+import java.util.List;
+
+import com.dollop.app.bean.Contact;
+import com.dollop.app.bean.User;
+import com.dollop.app.dao.AdminDAOInerface;
+import com.dollop.app.dao.ContactDAOInterface;
+import com.dollop.app.dao.GroupDAOInterface;
+import com.dollop.app.dao.UserDAOInterface;
+import com.dollop.app.dao.impl.AdminDAOImplement;
+import com.dollop.app.dao.impl.ContactDAOImplement;
+import com.dollop.app.dao.impl.GroupDAOImplement;
+import com.dollop.app.dao.impl.UserDAOImplement;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+/**
+ * Servlet implementation class PhoneBookController
+ */
+public class PhoneBookController extends HttpServlet {
+	private AdminDAOInerface ado = new AdminDAOImplement();
+	private UserDAOInterface udo = new UserDAOImplement();
+	private GroupDAOInterface gdo = new GroupDAOImplement();
+	private ContactDAOInterface cdo = new ContactDAOImplement();
+    private	RequestDispatcher rd=null;
+    User user = null;
+    Contact contact=null;
+    List<Contact> conlist=null;
+    private HttpSession session=null;
+	private static final long serialVersionUID = 1L;
+
+    /**
+     * Default constructor. 
+     */
+    public PhoneBookController() {
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		String action=request.getParameter("Action");
+//		System.out.print(action+"1");
+		switch(action)
+		{
+		case  "SIGNUPUSER":
+			 user = new User();
+			user.setuName(request.getParameter("uname"));
+			user.setuEmail(request.getParameter("uemail"));
+			user.setuMobile(request.getParameter("umobile"));
+			user.setuAddress(request.getParameter("uaddress"));
+			user.setuRole(request.getParameter("urole"));
+			user.setuPassword(request.getParameter("upassword"));
+			udo.saveUser(user);
+			rd=request.getRequestDispatcher("./index.jsp");
+			rd.forward(request, response);
+			break;
+		case "USERLOGIN":
+		    user = new User();
+			user = udo.userLogin(request.getParameter("uemail"),request.getParameter("upassword"));
+			if(user.getuRole()!=null)
+			{
+			if(user.getuRole().equals("User"))
+			{
+				session = request.getSession();
+				session.setAttribute("uId", user.getuId());
+				request.setAttribute("user", user);
+				rd=request.getRequestDispatcher("./UserDesktop.jsp");
+				rd.forward(request, response);
+			}
+			else
+			{
+				session = request.getSession();
+				session.setAttribute("uId", user.getuId());
+				request.setAttribute("user", user);
+				rd=request.getRequestDispatcher("./AdminDesktop.jsp");
+				rd.forward(request, response);
+			}
+			}
+			else
+			{   
+				rd=request.getRequestDispatcher("./index.jsp");
+				rd.forward(request, response);
+			}
+			break;
+		case "LOGOUT":
+			session.invalidate();
+			rd=request.getRequestDispatcher("./index.jsp");
+			rd.forward(request, response);
+			break;
+		case "UPDATEPROFILE":
+			user = new User();
+			user.setuId((Integer)session.getAttribute("uId"));
+			user.setuName(request.getParameter("uname"));
+			user.setuEmail(request.getParameter("uemail"));
+			user.setuMobile(request.getParameter("umobile"));
+			user.setuAddress(request.getParameter("uaddress"));
+			udo.saveUser(user);
+			request.setAttribute("user", user);
+			rd=request.getRequestDispatcher("./UserDesktop.jsp");
+			rd.forward(request, response);
+			break;
+		case "GETUSER":
+		    user = new User();
+			user=udo.userById((Integer)session.getAttribute("uId"));
+			request.setAttribute("user", user);
+			rd=request.getRequestDispatcher("./pages/login/profile.jsp");
+			rd.forward(request, response);
+			break;
+		case "TOCREATECONTACT":
+			user = new User();
+			user=udo.userById((Integer)session.getAttribute("uId"));
+			request.setAttribute("user", user);
+			rd=request.getRequestDispatcher("./pages/ui-features/createapp.jsp");
+			rd.forward(request, response);
+			break;
+		case "ADDCONTACT":
+		 contact=new Contact();
+			contact.setConName(request.getParameter("conname"));
+			contact.setConEmail(request.getParameter("conemail"));
+			contact.setConAddress(request.getParameter("conaddress"));
+			contact.setConMobile(request.getParameter("conmobile"));
+			contact.setConIsFav(Integer.parseInt(request.getParameter("conisfav")));
+			contact.setuId((Integer)session.getAttribute("uId"));
+			contact.setgId(1);
+			cdo.saveContact(contact);
+			 user=new User();
+			user=udo.userById((Integer)session.getAttribute("uId"));
+			request.setAttribute("user", user);
+			rd=request.getRequestDispatcher("./UserDesktop.jsp");
+			rd.forward(request, response);
+			break;
+		case "TOVIEWCONTACT":
+			user = new User();
+			conlist = cdo.viewAllContact((Integer)session.getAttribute("uId"));
+			user=udo.userById((Integer)session.getAttribute("uId"));
+			request.setAttribute("user", user);
+			request.setAttribute("conlist",conlist);
+			rd=request.getRequestDispatcher("./pages/ui-features/viewapp.jsp");
+			rd.forward(request, response);
+			break;
+		case "DELETECONTACT":
+			cdo.deleteContact(Integer.parseInt(request.getParameter("conid")));
+			user = new User();
+			conlist = cdo.viewAllContact((Integer)session.getAttribute("uId"));
+			user=udo.userById((Integer)session.getAttribute("uId"));
+			request.setAttribute("user", user);
+			request.setAttribute("conlist",conlist);
+			rd=request.getRequestDispatcher("./pages/ui-features/viewapp.jsp");
+			rd.forward(request, response);
+			break;
+		case "TOEDITCONTACT":
+			contact = cdo.contactById(Integer.parseInt(request.getParameter("conid")));
+			user = new User();
+			user=udo.userById((Integer)session.getAttribute("uId"));
+			request.setAttribute("user", user);
+			request.setAttribute("contact",contact);
+			rd=request.getRequestDispatcher("./pages/ui-features/editContact.jsp");
+			rd.forward(request, response);
+			break;
+		case "UPDATECONTACT":
+			contact.setConId(Integer.parseInt(request.getParameter("conid")));
+			break;
+		default:
+			System.out.println("Something went wrong");
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}

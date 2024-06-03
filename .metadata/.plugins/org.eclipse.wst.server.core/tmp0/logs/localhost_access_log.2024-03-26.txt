@@ -1,0 +1,9 @@
+127.0.0.1 - - [26/Mar/2024:15:56:25 +0530] "GET / HTTP/1.1" 404 751
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:15:56:29 +0530] "GET /PhoneBookManagement/ HTTP/1.1" 200 4084
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:15:56:29 +0530] "GET /PhoneBookManagement/assets/vendors/js/vendor.bundle.base.js HTTP/1.1" 404 826
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:15:56:32 +0530] "GET /PhoneBookManagement/Sign.jsp HTTP/1.1" 200 5926
+127.0.0.1 - - [26/Mar/2024:15:56:58 +0530] "GET / HTTP/1.1" 404 751
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:15:57:00 +0530] "GET /PhoneBookSystemManegment/ HTTP/1.1" 200 4249
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:15:57:06 +0530] "GET /PhoneBookSystemManegment/Sign.jsp HTTP/1.1" 200 5504
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:15:57:14 +0530] "GET /PhoneBookManagement/Sign.jsp HTTP/1.1" 200 5926
+0:0:0:0:0:0:0:1 - - [26/Mar/2024:15:57:14 +0530] "GET /PhoneBookManagement/Sign.jsp HTTP/1.1" 200 5926

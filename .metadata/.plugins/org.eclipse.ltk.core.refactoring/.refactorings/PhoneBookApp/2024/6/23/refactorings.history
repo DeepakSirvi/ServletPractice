@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move &apos;RahulPhoneBook.sql&apos; to &apos;PhoneBookApp&apos;" description="Move &apos;RahulPhoneBook.sql&apos; to &apos;PhoneBookApp&apos;" destination="/PhoneBookApp" element1="/PhoneBookManagement/src/main/webapp/RahulPhoneBook.sql" flags="7" id="org.eclipse.ltk.core.refactoring.move.resources" resources="1" stamp="1717397691385" updateReferences="true"/>
+</session>

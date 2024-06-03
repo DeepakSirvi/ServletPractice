@@ -1,0 +1,16 @@
+1683033693218	Delete element
+1683033732531	Delete element
+1683033892857	Rename package 'com.dollop.app'
+1683043173864	Rename type 'UserDaoInterface'
+1683043486378	Rename compilation unit 'Dbconnection.java'
+1683089632901	Move 'UserDAOInterface.java' to 'impl'
+1683089701162	Move 'UserDAOInterface.java' to 'dao'
+1683115331020	Delete element
+1683203530098	Delete elements
+1683203539306	Delete element
+1683221709502	Move 'createContact.jsp' to 'ui-features'
+1683355448520	Rename resource 'createContact.jsp'
+1683364483548	Delete element
+1683376930840	Delete element
+1683376950598	Delete element
+1683377718877	Rename resource 'fav.png'

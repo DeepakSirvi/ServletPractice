@@ -1,0 +1,126 @@
+package com.dollop.app.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.dollop.app.bean.Contact;
+import com.dollop.app.bean.Contact;
+import com.dollop.app.dao.ContactDAOInterface;
+import com.dollop.app.util.DbConnection;
+
+public class ContactDAOImplement implements ContactDAOInterface {
+	private final static String ALLCONTACT_SQL="select * from contact where uId=?";
+	private final static String ADD_SQL="INSERT INTO Contact (conName,conEmail,conMobile,conAddress,conIsFav,uId,gId) values(?,?,?,?,?,?,?)";
+	private final static String UPDATE_SQL="Update Contact set conName=?,conEmail=?,conMobile=?,conAddress=? where conID=?";
+	private final static String CONTACT_SQL="select * from Contact where conId=?";
+	private final static String DELETE_SQL="delete from  where conId=?";
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+
+	public Boolean saveContact(Contact contact) {
+		con=DbConnection.getConnection();
+		try {
+			if(contact.getConId()!=null)
+			{
+
+				pstmt=con.prepareStatement(UPDATE_SQL);
+				pstmt.setInt(8, contact.getConId());
+				System.out.println("Update");
+			
+			}
+			else
+			{
+				pstmt=con.prepareStatement(ADD_SQL);
+			}
+			pstmt.setString(1, contact.getConName());
+			pstmt.setString(2, contact.getConEmail());
+			pstmt.setString(3, contact.getConMobile());
+			pstmt.setString(4, contact.getConAddress());
+			pstmt.setInt(5, contact.getConIsFav());
+			pstmt.setInt(6, contact.getuId());
+			pstmt.setInt(7, contact.getgId());
+			
+			if(pstmt.executeUpdate()>0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public Boolean deleteContact(Integer id) {
+		con=DbConnection.getConnection();
+		try {
+			pstmt=con.prepareStatement(DELETE_SQL);
+			pstmt.setInt(1, id);
+			if(pstmt.executeUpdate()>0)
+			return true;
+			else
+				return false;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public Contact contactById(Integer id) {
+		con=DbConnection.getConnection();
+	     Contact contact = new Contact();
+		try {
+			pstmt=con.prepareStatement(CONTACT_SQL);
+			pstmt.setInt(1, id);
+			ResultSet rs= pstmt.executeQuery();
+			
+			rs.next();
+				contact.setConId(rs.getInt(1));
+				contact.setConName(rs.getString(2));
+				contact.setConEmail(rs.getString(3));
+				contact.setConMobile(rs.getString(5));
+				contact.setConAddress(rs.getString(6));
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return contact;
+	}
+	
+	public List<Contact> viewAllContact(Integer uid) {
+		List<Contact> list = new ArrayList<Contact>();
+		con=DbConnection.getConnection();
+		try {
+			pstmt=con.prepareStatement(ALLCONTACT_SQL);
+			ResultSet rs= pstmt.executeQuery();
+			while(rs.next())
+			{
+				Contact contact = new Contact();
+				contact.setConId(rs.getInt(1));
+				contact.setConName(rs.getString(2));
+				contact.setConEmail(rs.getString(3));
+				contact.setConMobile(rs.getString(4));
+				contact.setConAddress(rs.getString(5));
+				list.add(contact);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return list;
+	}
+
+}
